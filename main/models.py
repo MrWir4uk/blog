@@ -5,12 +5,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Profile(models.Model):
-
     ROLE_CHOICES = (
         ('user', 'Користувач'),
         ('author', 'Автор'),
     )
-
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
@@ -19,27 +17,23 @@ class Profile(models.Model):
         return f"{self.user.username} ({self.role})"
 
 
+class Subscription(models.Model):
+    from_user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="followers")
+    to_user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="subscriptions")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
+    
     def __str__(self):
         return self.name
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(unique=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+   
 
     def __str__(self):
         return self.name
@@ -53,7 +47,7 @@ class Post(models.Model):
     )
 
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, blank=True)
+    
 
     author = models.ForeignKey(
         User,
@@ -91,11 +85,6 @@ class Post(models.Model):
         if ratings.exists():
             return round(sum(r.value for r in ratings) / ratings.count(), 1)
         return 0
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -143,3 +132,5 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.post.title} - {self.value}"
+    
+
