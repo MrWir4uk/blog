@@ -1,6 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    
-{% endblock  %}
 
+<div class="container mt-4">
+
+    <div class="card p-4 shadow">
+
+        <div class="row">
+
+            <div class="col-md-3 text-center">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" class="img-fluid rounded-circle" width="150">
+                {% else %}
+                    <img src="https://via.placeholder.com/150" class="img-fluid rounded-circle">
+                {% endif %}
+            </div>
+
+            <div class="col-md-9">
+                <h2>{{ profile.user.username }}</h2>
+
+                <p><strong>Роль:</strong> {{ profile.role }}</p>
+                <p><strong>Email:</strong> {{ profile.user.email }}</p>
+                <p><strong>Кількість постів:</strong> {{ profile.user.posts.count }}</p>
+
+                <hr>
+
+                <h5>Останні пости:</h5>
+
+                {% for post in profile.user.posts.all|slice:":3" %}
+                    <p>
+                        <a href="{% url 'post_detail' post.pk %}">
+                            {{ post.title }}
+                        </a>
+                    </p>
+                {% empty %}
+                    <p>Поки що немає постів</p>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

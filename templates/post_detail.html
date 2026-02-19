@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{ post.title }}</h1>
+
+<p><strong>Автор:</strong> {{ post.author.username }}</p>
+<p><strong>Категорія:</strong> {{ post.category }}</p>
+<p><strong>Статус:</strong> {{ post.status }}</p>
+
+{% if post.image %}
+    <img src="{{ post.image.url }}" width="300">
+{% endif %}
+
+<p>{{ post.content }}</p>
+
+<p>Створено: {{ post.created_at }}</p>
+
+<a href="/">Назад</a>
+
+{% endblock %}

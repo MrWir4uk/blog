@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h1>Мій блог</h1>
+
+{% if user.is_authenticated %}
+    <p>
+        Вітаю, {{ user.username }} |
+        <a href="/profile/">Профіль</a> |
+        <a href="/create/">Створити пост</a>
+    </p>
+{% else %}
+    <p><a href="/accounts/login/">Увійти</a></p>
+{% endif %}
+
+<hr>
+
+{% for post in posts %}
+    <div style="margin-bottom: 30px;">
+        <h2>
+            <a href="/post/{{ post.id }}/">
+                {{ post.title }}
+            </a>
+        </h2>
+
+        <p><strong>Автор:</strong> {{ post.author.username }}</p>
+        <p><strong>Категорія:</strong> {{ post.category }}</p>
+
+        {% if post.image %}
+            <img src="{{ post.image.url }}" width="200">
+        {% endif %}
+
+        <p>{{ post.content|truncatewords:20 }}</p>
+
+        <hr>
+    </div>
+{% empty %}
+    <p>Поки що немає постів 😢</p>
+{% endfor %}
+
+{% endblock %}
