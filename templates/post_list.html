@@ -3,8 +3,6 @@
 {% block content %}
 
 
-<h1>Мій блог</h1>
-
 {% if user.is_authenticated %}
     <p>
         Вітаю, {{ user.username }} |
@@ -18,11 +16,11 @@
 <hr>
 
 {% for post in posts %}
-    <div style="margin-bottom: 30px;">
-        <h2>
-            <a href="/post/{{ post.id }}/">
-                {{ post.title }}
+    <div class="card p-3 mb-3" >
+        <a class="stretched-link" href="/post/{{ post.id }}/">   
             </a>
+        <h2>
+            {{ post.title }} 
         </h2>
 
         <p><strong>Автор:</strong> {{ post.author.username }}</p>
@@ -33,8 +31,6 @@
         {% endif %}
 
         <p>{{ post.content|truncatewords:20 }}</p>
-
-        <hr>
     </div>
 {% empty %}
     <p>Поки що немає постів 😢</p>

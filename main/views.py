@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Post
-from .forms import PostForm
+from .forms import PostForm, ProfileForm
 from django.contrib import messages
 from django.shortcuts import redirect
+
 
 
 def post_list(request):
@@ -46,3 +47,24 @@ def profile_view(request):
     return render(request, "profile.html", {'profile': profile})
 
 
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            # Зміна username
+            username = form.cleaned_data.get('username')
+            if username:
+                request.user.username = username
+                request.user.save()
+            profile.save()
+            messages.success(request, "Профіль оновлено успішно!")
+            return redirect('profile')
+    else:
+        # Передаємо початкові дані для username
+        form = ProfileForm(instance=profile, initial={'username': request.user.username})
+
+    return render(request, "edit_profile.html", {'form': form})

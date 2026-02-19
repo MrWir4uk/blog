@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Редагування профілю{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-4">Редагування профілю</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div class="mb-3">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+
+            <!-- Avatar -->
+            <div class="mb-3">
+                {{ form.avatar.label_tag }}
+                {{ form.avatar }}
+            </div>
+
+            <button type="submit" class="btn btn-success">Зберегти</button>
+            <a href="{% url 'profile' %}" class="btn btn-secondary">Назад</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -3,10 +3,10 @@
 {% block content %}
 <h2>Створити пост</h2>
 
-<form method="post" enctype="multipart/form-data">
+<form style="max-width: 600px;" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Зберегти</button>
+    <button class="btn btn-outline-primary" type="submit">Зберегти</button>
 </form>
 
 {% endblock %}
