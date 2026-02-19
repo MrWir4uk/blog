@@ -37,7 +37,7 @@ def create_post(request):
         form = PostForm()
 
     return render(request, 'create_post.html', {'form': form})
-    return render(request, 'create_post.html', {'form': form})
+    
 
 
 @login_required
