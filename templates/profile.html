@@ -2,6 +2,57 @@
 {% block title %}Профіль {{ profile.user.username }}{% endblock %}
 
 {% block content %}
+<style>
+/* ===== Темний профіль ===== */
+.bg-dark {
+    background-color: #1b1b2f !important;
+}
+
+.text-light {
+    color: #e6e6e6 !important;
+}
+
+.card.bg-dark {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card.bg-dark:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px #00ffffaa;
+}
+
+.rounded-circle {
+    object-fit: cover;
+}
+
+/* Кнопки неонові */
+.btn-info {
+    background: linear-gradient(135deg, #00ffff, #0d6efd);
+    border: none;
+    color: #000;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(0,255,255,0.5);
+    transition: 0.3s ease;
+}
+
+.btn-info:hover {
+    box-shadow: 0 0 20px rgba(0,255,255,0.8);
+    transform: scale(1.05);
+}
+
+.btn-outline-warning {
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-outline-warning:hover {
+    box-shadow: 0 0 15px #00ffffaa;
+    transform: scale(1.05);
+}
+</style>
+
 <div class="container mt-4">
 
   <!-- ===== ПРОФІЛЬ ===== -->
@@ -64,53 +115,3 @@
 </div>
 {% endblock %}
 
-<style>
-/* ===== Темний профіль ===== */
-.bg-dark {
-    background-color: #1b1b2f !important;
-}
-
-.text-light {
-    color: #e6e6e6 !important;
-}
-
-.card.bg-dark {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card.bg-dark:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px #00ffffaa;
-}
-
-.rounded-circle {
-    object-fit: cover;
-}
-
-/* Кнопки неонові */
-.btn-info {
-    background: linear-gradient(135deg, #00ffff, #0d6efd);
-    border: none;
-    color: #000;
-    font-weight: 600;
-    box-shadow: 0 0 10px rgba(0,255,255,0.5);
-    transition: 0.3s ease;
-}
-
-.btn-info:hover {
-    box-shadow: 0 0 20px rgba(0,255,255,0.8);
-    transform: scale(1.05);
-}
-
-.btn-outline-warning {
-    border: 1px solid #00ffff;
-    color: #00ffff;
-    font-weight: 600;
-    transition: 0.3s ease;
-}
-
-.btn-outline-warning:hover {
-    box-shadow: 0 0 15px #00ffffaa;
-    transform: scale(1.05);
-}
-</style>

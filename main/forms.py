@@ -1,11 +1,19 @@
 from django import forms
 from .models import Post, Profile
+from django_select2 import forms as s2forms
 
+class TagWigget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "name__icontains", 
+    ]
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'category', 'tags', 'image', 'status']
+        widgets = {
+            "tags": TagWigget,
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

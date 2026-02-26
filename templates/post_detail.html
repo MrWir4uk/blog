@@ -1,25 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="post-card">
-    <h1>{{ post.title }}</h1>
-
-    <p><strong>Автор:</strong> {{ post.author.username }}</p>
-    <p><strong>Категорія:</strong> {{ post.category }}</p>
-    <p><strong>Статус:</strong> {{ post.status }}</p>
-
-    {% if post.image %}
-        <img src="{{ post.image.url }}" class="post-image">
-    {% endif %}
-
-    <p>{{ post.content }}</p>
-
-    <p class="created">Створено: {{ post.created_at }}</p>
-
-    <a href="/" class="back-link">Назад</a>
-</div>
-{% endblock %}
-
 <style>
 body {
     background-color: #000;
@@ -70,3 +51,23 @@ body {
     text-shadow: 0 0 5px #0ff;
 }
 </style>
+
+<div class="post-card">
+    <h1>{{ post.title }}</h1>
+
+    <p><strong>Автор:</strong> {{ post.author.username }}</p>
+    <p><strong>Категорія:</strong> {{ post.category }}</p>
+    <p><strong>Статус:</strong> {{ post.status }}</p>
+
+    {% if post.image %}
+        <img src="{{ post.image.url }}" class="post-image">
+    {% endif %}
+
+    <p>{{ post.content }}</p>
+
+    <p class="created">Створено: {{ post.created_at }}</p>
+
+    <a href="/" class="back-link">Назад</a>
+</div>
+{% endblock %}
+

@@ -1,52 +1,3 @@
-<nav class="navbar navbar-expand-lg neon-nav fixed-top">
-  <div class="container">
-
-    <a class="navbar-brand neon-logo" href="/">
-      BLOG<span>_</span>
-    </a>
-
-    <button class="navbar-toggler neon-toggler" type="button"
-      data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-      <i class="bi bi-list"></i>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-
-        <li class="nav-item">
-          <a class="nav-link neon-link" href="/">Головна</a>
-        </li>
-
-        {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link neon-link" href="/profile/">Профіль</a>
-          </li>
-
-          {% if user.profile.role == 'author' or user.is_superuser %}
-          <li class="nav-item">
-            <a class="btn neon-btn" href="/create/">
-              + Новий пост
-            </a>
-          </li>
-          {% endif %}
-
-          <li class="nav-item">
-            <a class="nav-link neon-muted" href="/accounts/logout/">Вийти</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="btn neon-btn-outline" href="/accounts/login/">
-              Увійти
-            </a>
-          </li>
-        {% endif %}
-
-      </ul>
-    </div>
-
-  </div>
-</nav>
-
 <style> /* ====== NAVBAR ====== */
 .neon-nav {
     background: rgba(10, 10, 15, 0.75);
@@ -134,3 +85,54 @@ body {
     padding-top: 80px;
 }
 </style>
+
+
+<nav class="navbar navbar-expand-lg neon-nav fixed-top">
+  <div class="container">
+
+    <a class="navbar-brand neon-logo" href="/">
+      BLOG<span>_</span>
+    </a>
+
+    <button class="navbar-toggler neon-toggler" type="button"
+      data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+
+        <li class="nav-item">
+          <a class="nav-link neon-link" href="/">Головна</a>
+        </li>
+
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link neon-link" href="/profile/">Профіль</a>
+          </li>
+
+          {% if user.profile.role == 'author' or user.is_superuser %}
+          <li class="nav-item">
+            <a class="btn neon-btn" href="/create/">
+              + Новий пост
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link neon-muted" href="/accounts/logout/">Вийти</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="btn neon-btn-outline" href="/accounts/login/">
+              Увійти
+            </a>
+          </li>
+        {% endif %}
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+

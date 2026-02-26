@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.urls import include, path
 
 urlpatterns = [
     path('', views.post_list, name='post_list'),
@@ -9,4 +10,6 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('my-drafts/', views.my_drafts, name='my_drafts'), # мої чернетки
     path('post/<int:pk>/edit/', views.edit_post, name='edit_post'), # редагування поста
+    path("select2/", include("django_select2.urls")),
+
 ]

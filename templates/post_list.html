@@ -1,46 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- ===== HERO ===== -->
-<div class="hero glass mb-5 text-center">
-    {% if user.is_authenticated %}
-        <h1>Привіт, <span class="neon-text">{{ user.username }}</span> 👋</h1>
-        <p class="text-muted">Готовий написати щось нове?</p>
-
-        <div class="d-flex justify-content-center gap-3 mt-3">
-            <a href="/profile/" class="btn neon-btn">Профіль</a>
-            <a href="/create/" class="btn neon-btn-outline">Новий пост</a>
-        </div>
-    {% else %}
-        <h1>Ласкаво просимо 🚀</h1>
-        <p class="text-muted">Увійди, щоб писати та читати пости</p>
-
-        <a href="/accounts/login/" class="btn neon-btn mt-3">Увійти</a>
-    {% endif %}
-</div>
-
-<!-- ===== POSTS GRID ===== -->
-<div class="posts-grid">
-{% for post in posts %}
-    <a href="/post/{{ post.id }}/" class="post-preview glass">
-        {% if post.image %}
-            <img src="{{ post.image.url }}" class="post-thumb">
-        {% endif %}
-        <div class="p-3">
-            <h3>{{ post.title }}</h3>
-            <div class="post-meta">
-                <span>👤 {{ post.author.username }}</span>
-                <span>📂 {{ post.category }}</span>
-            </div>
-            <p class="text-muted">{{ post.content|truncatewords:18 }}</p>
-        </div>
-    </a>
-{% empty %}
-    <p class="text-muted">Поки що немає постів 😢</p>
-{% endfor %}
-</div>
-{% endblock %}
-
 <style>
 body {
     background-color: #000;
@@ -140,3 +100,45 @@ body {
     box-shadow: 0 0 25px #0ff, 0 0 50px #0ff;
 }
 </style>
+
+
+<!-- ===== HERO ===== -->
+<div class="hero glass mb-5 text-center">
+    {% if user.is_authenticated %}
+        <h1>Привіт, <span class="neon-text">{{ user.username }}</span> 👋</h1>
+        <p class="text-muted">Готовий написати щось нове?</p>
+
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            <a href="/profile/" class="btn neon-btn">Профіль</a>
+            <a href="/create/" class="btn neon-btn-outline">Новий пост</a>
+        </div>
+    {% else %}
+        <h1>Ласкаво просимо 🚀</h1>
+        <p class="text-muted">Увійди, щоб писати та читати пости</p>
+
+        <a href="/accounts/login/" class="btn neon-btn mt-3">Увійти</a>
+    {% endif %}
+</div>
+
+<!-- ===== POSTS GRID ===== -->
+<div class="posts-grid">
+{% for post in posts %}
+    <a href="/post/{{ post.id }}/" class="post-preview glass">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" class="post-thumb">
+        {% endif %}
+        <div class="p-3">
+            <h3>{{ post.title }}</h3>
+            <div class="post-meta">
+                <span>👤 {{ post.author.username }}</span>
+                <span>📂 {{ post.category }}</span>
+            </div>
+            <p class="text-muted">{{ post.content|truncatewords:18 }}</p>
+        </div>
+    </a>
+{% empty %}
+    <p class="text-muted">Поки що немає постів 😢</p>
+{% endfor %}
+</div>
+{% endblock %}
+
