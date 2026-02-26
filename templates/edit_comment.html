@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="post-card">
+    <h3>Редагувати коментар</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.content }}
+        <button type="submit" class="btn btn-info mt-2">Зберегти</button>
+        <a href="{{ comment.post.get_absolute_url }}" class="btn btn-secondary mt-2">Відміна</a>
+    </form>
+</div>
+{% endblock %}

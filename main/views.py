@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Post
+from .models import Post, Comment
 from .forms import PostForm, ProfileForm
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.contrib import messages
+
+from .forms import CommentForm
 
 
 
@@ -13,9 +14,31 @@ def post_list(request):
     return render(request, 'post_list.html', {'posts': posts})
 
 
+
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    return render(request, 'post_detail.html', {'post': post})
+    # беремо тільки затверджені коментарі
+    comments = post.comments.filter(is_approved=True).order_by('-created_at')
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.author = request.user
+                comment.post = post
+                comment.save()
+                return redirect('post_detail', pk=post.pk)
+        else:
+            return redirect('accounts/login/')
+    else:
+        form = CommentForm()
+
+    return render(request, 'post_detail.html', {
+        'post': post,
+        'comments': comments,
+        'form': form,
+    })
 
 
 @login_required
@@ -96,3 +119,27 @@ def edit_post(request, pk):
         form = PostForm(instance=post)
 
     return render(request, 'create_post.html', {'form': form})
+
+
+
+@login_required
+def edit_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk, author=request.user)
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=comment.post.pk)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'edit_comment.html', {'form': form})
+
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user == comment.author or request.user == comment.post.author or request.user.is_staff:
+        post_pk = comment.post.pk
+        comment.delete()
+        return redirect('post_detail', pk=post_pk)
+    else:
+        return redirect('post_detail', pk=comment.post.pk)

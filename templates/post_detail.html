@@ -8,6 +8,7 @@ body {
     color: #fff;
 }
 
+/* ===== POST CARD ===== */
 .post-card {
     background: rgba(20, 20, 20, 0.8);
     border: 2px solid #0ff;
@@ -50,6 +51,72 @@ body {
     color: #0ff;
     text-shadow: 0 0 5px #0ff;
 }
+
+/* ===== COMMENTS ===== */
+.comments-list .comment {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    background: rgba(30, 30, 30, 0.9);
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 8px #0ff;
+    position: relative;
+}
+
+.comments-list .comment img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 8px #0ff;
+}
+
+.comment-actions {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+    gap: 5px;
+}
+
+.comment-actions a {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #000;
+    transition: 0.3s;
+}
+
+.comment-actions a.btn-warning {
+    background: #ff0;
+    box-shadow: 0 0 8px #ff0, 0 0 16px #ff0;
+}
+
+.comment-actions a.btn-warning:hover {
+    box-shadow: 0 0 16px #ff0, 0 0 32px #ff0;
+}
+
+.comment-actions a.btn-danger {
+    background: #f00;
+    box-shadow: 0 0 8px #f00, 0 0 16px #f00;
+}
+
+.comment-actions a.btn-danger:hover {
+    box-shadow: 0 0 16px #f00, 0 0 32px #f00;
+}
+
+textarea.form-control {
+    background: rgba(30,30,30,0.9);
+    border: 2px solid #0ff;
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 8px #0ff;
+    resize: none;
+}
 </style>
 
 <div class="post-card">
@@ -64,10 +131,43 @@ body {
     {% endif %}
 
     <p>{{ post.content }}</p>
-
     <p class="created">Створено: {{ post.created_at }}</p>
 
-    <a href="/" class="back-link">Назад</a>
+    <h4 class="mt-4">Коментарі</h4>
+    <div class="comments-list mb-4">
+        {% for comment in comments %}
+        <div class="comment">
+            <img src="{{ comment.author.profile.avatar.url }}" alt="avatar">
+            <div>
+                <strong class="text-info">{{ comment.author.username }}</strong>
+                <small class="text-muted ms-2">{{ comment.created_at|date:"d M Y H:i" }}</small>
+                <p class="mt-1 mb-0">{{ comment.content }}</p>
+            </div>
+
+            {% if user == comment.author or user == post.author or user.is_staff %}
+            <div class="comment-actions">
+                {% if user == comment.author %}
+                <a href="{% url 'edit_comment' comment.pk %}" class="btn btn-warning">✏️</a>
+                {% endif %}
+                <a href="{% url 'delete_comment' comment.pk %}" class="btn btn-danger" onclick="return confirm('Видалити коментар?');">🗑️</a>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p class="text-muted">Поки що немає коментарів 😢</p>
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.content }}
+        <button type="submit" class="btn btn-info mt-2">Додати коментар</button>
+    </form>
+    {% else %}
+    <p>Увійдіть, щоб залишити коментар.</p>
+    {% endif %}
+
+    <a href="/" class="back-link mt-4 d-block">Назад</a>
 </div>
 {% endblock %}
-
