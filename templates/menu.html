@@ -1,3 +1,136 @@
-<header>
-    
-</header>
+<nav class="navbar navbar-expand-lg neon-nav fixed-top">
+  <div class="container">
+
+    <a class="navbar-brand neon-logo" href="/">
+      BLOG<span>_</span>
+    </a>
+
+    <button class="navbar-toggler neon-toggler" type="button"
+      data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+
+        <li class="nav-item">
+          <a class="nav-link neon-link" href="/">Головна</a>
+        </li>
+
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link neon-link" href="/profile/">Профіль</a>
+          </li>
+
+          {% if user.profile.role == 'author' or user.is_superuser %}
+          <li class="nav-item">
+            <a class="btn neon-btn" href="/create/">
+              + Новий пост
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link neon-muted" href="/accounts/logout/">Вийти</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="btn neon-btn-outline" href="/accounts/login/">
+              Увійти
+            </a>
+          </li>
+        {% endif %}
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<style> /* ====== NAVBAR ====== */
+.neon-nav {
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(0,255,255,0.15);
+    box-shadow: 0 0 30px rgba(0,255,255,0.15);
+}
+
+/* ====== LOGO ====== */
+.neon-logo {
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: #00ffff;
+    text-shadow: 0 0 12px #00ffff;
+    letter-spacing: 1px;
+}
+
+.neon-logo span {
+    animation: blink 1.4s infinite;
+}
+
+/* ====== LINKS ====== */
+.neon-link {
+    color: #e0e0e0;
+    font-weight: 500;
+    position: relative;
+    transition: 0.25s ease;
+}
+
+.neon-link:hover {
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+    transform: translateY(-2px);
+}
+
+/* ====== BUTTONS ====== */
+.neon-btn {
+    background: linear-gradient(135deg, #00ffff, #0d6efd);
+    color: #000;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 6px 18px;
+    box-shadow: 0 0 15px rgba(0,255,255,0.6);
+    transition: 0.3s ease;
+}
+
+.neon-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(0,255,255,1);
+}
+
+.neon-btn-outline {
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    border-radius: 999px;
+    padding: 6px 18px;
+    transition: 0.3s ease;
+}
+
+.neon-btn-outline:hover {
+    background: #00ffff;
+    color: #000;
+    box-shadow: 0 0 20px #00ffff;
+}
+
+/* ====== MUTED ====== */
+.neon-muted {
+    color: #999;
+}
+
+/* ====== TOGGLER ====== */
+.neon-toggler {
+    color: #00ffff;
+    font-size: 1.8rem;
+    border: none;
+}
+
+/* ====== ANIMATION ====== */
+@keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+}
+
+body {
+    padding-top: 80px;
+}
+</style>

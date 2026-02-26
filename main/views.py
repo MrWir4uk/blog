@@ -4,6 +4,7 @@ from .models import Post
 from .forms import PostForm, ProfileForm
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.contrib import messages
 
 
 
@@ -68,3 +69,30 @@ def edit_profile(request):
         form = ProfileForm(instance=profile, initial={'username': request.user.username})
 
     return render(request, "edit_profile.html", {'form': form})
+
+
+
+@login_required
+def my_drafts(request):
+    drafts = Post.objects.filter(author=request.user, status='draft')
+    return render(request, 'my_drafts.html', {'drafts': drafts})
+
+
+@login_required
+def edit_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    # щоб користувач міг редагувати тільки свій пост
+    if post.author != request.user:
+        messages.error(request, "Ви не можете редагувати цей пост")
+        return redirect('post_list')
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'create_post.html', {'form': form})

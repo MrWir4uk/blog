@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>📝 Мої чернетки</h2>
+    <hr>
+
+    {% for post in drafts %}
+        <div class="card mb-3 p-3 shadow-sm">
+            <h5>{{ post.title }}</h5>
+            <a href="{% url 'edit_post' post.pk %}" class="btn btn-sm btn-outline-primary">
+                Редагувати
+            </a>
+        </div>
+    {% empty %}
+        <p>У вас поки немає чернеток</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

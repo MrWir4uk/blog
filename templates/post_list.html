@@ -1,39 +1,142 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- ===== HERO ===== -->
+<div class="hero glass mb-5 text-center">
+    {% if user.is_authenticated %}
+        <h1>Привіт, <span class="neon-text">{{ user.username }}</span> 👋</h1>
+        <p class="text-muted">Готовий написати щось нове?</p>
 
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            <a href="/profile/" class="btn neon-btn">Профіль</a>
+            <a href="/create/" class="btn neon-btn-outline">Новий пост</a>
+        </div>
+    {% else %}
+        <h1>Ласкаво просимо 🚀</h1>
+        <p class="text-muted">Увійди, щоб писати та читати пости</p>
 
-{% if user.is_authenticated %}
-    <p>
-        Вітаю, {{ user.username }} |
-        <a href="/profile/">Профіль</a> |
-        <a href="/create/">Створити пост</a>
-    </p>
-{% else %}
-    <p><a href="/accounts/login/">Увійти</a></p>
-{% endif %}
+        <a href="/accounts/login/" class="btn neon-btn mt-3">Увійти</a>
+    {% endif %}
+</div>
 
-<hr>
-
+<!-- ===== POSTS GRID ===== -->
+<div class="posts-grid">
 {% for post in posts %}
-    <div class="card p-3 mb-3" >
-        <a class="stretched-link" href="/post/{{ post.id }}/">   
-            </a>
-        <h2>
-            {{ post.title }} 
-        </h2>
-
-        <p><strong>Автор:</strong> {{ post.author.username }}</p>
-        <p><strong>Категорія:</strong> {{ post.category }}</p>
-
+    <a href="/post/{{ post.id }}/" class="post-preview glass">
         {% if post.image %}
-            <img src="{{ post.image.url }}" width="200">
+            <img src="{{ post.image.url }}" class="post-thumb">
         {% endif %}
-
-        <p>{{ post.content|truncatewords:20 }}</p>
-    </div>
+        <div class="p-3">
+            <h3>{{ post.title }}</h3>
+            <div class="post-meta">
+                <span>👤 {{ post.author.username }}</span>
+                <span>📂 {{ post.category }}</span>
+            </div>
+            <p class="text-muted">{{ post.content|truncatewords:18 }}</p>
+        </div>
+    </a>
 {% empty %}
-    <p>Поки що немає постів 😢</p>
+    <p class="text-muted">Поки що немає постів 😢</p>
 {% endfor %}
-
+</div>
 {% endblock %}
+
+<style>
+body {
+    background-color: #000;
+    font-family: 'Orbitron', sans-serif;
+    color: #fff;
+}
+
+/* HERO */
+.hero {
+    padding: 50px 30px;
+    border-radius: 25px;
+    margin-bottom: 40px;
+}
+.neon-text {
+    color: #0ff;
+    text-shadow: 0 0 15px rgba(0,255,255,0.7);
+}
+
+/* POSTS GRID */
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* POST CARD */
+.post-preview {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(20,20,20,0.8);
+    border: 2px solid #0ff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.post-preview:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 0 30px #0ff, 0 0 60px #0ff;
+}
+
+.post-thumb {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 2px solid #0ff;
+}
+
+.post-preview h3 {
+    margin: 10px 0;
+    color: #0ff;
+    text-shadow: 0 0 8px #0ff;
+}
+
+.post-meta span {
+    color: #9aa0a6;
+    text-shadow: 0 0 5px rgba(0,255,255,0.5);
+    margin-right: 10px;
+}
+
+.post-preview p {
+    color: #ccc;
+}
+
+/* BUTTONS */
+.neon-btn {
+    background: #0ff;
+    color: #000;
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+    transition: 0.3s;
+}
+
+.neon-btn:hover {
+    box-shadow: 0 0 25px #0ff, 0 0 50px #0ff;
+}
+
+.neon-btn-outline {
+    background: transparent;
+    border: 2px solid #0ff;
+    color: #0ff;
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+}
+
+.neon-btn-outline:hover {
+    background: #0ff;
+    color: #000;
+    box-shadow: 0 0 25px #0ff, 0 0 50px #0ff;
+}
+</style>

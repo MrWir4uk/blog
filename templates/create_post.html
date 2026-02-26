@@ -1,12 +1,135 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Створити пост</h2>
 
-<form style="max-width: 600px;" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-outline-primary" type="submit">Зберегти</button>
-</form>
+<div class="container mt-5">
+    <div class="row">
+
+        <!-- ФОРМА -->
+        <div class="col-lg-6">
+            <div class="card bg-dark text-light shadow-lg p-4 rounded-4">
+                <h3 class="mb-4">✍️ Створити пост</h3>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Назва</label>
+                        {{ form.title }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Текст</label>
+                        {{ form.content }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Категорія</label>
+                        {{ form.category }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Теги</label>
+                        {{ form.tags }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Зображення</label>
+                        {{ form.image }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Статус</label>
+                        {{ form.status }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        💾 Зберегти
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg p-4 rounded-4">
+
+                <img id="preview-image" class="img-fluid rounded mb-3 d-none">
+
+                <h3 id="preview-title">Назва поста</h3>
+
+                <div class="mb-2">
+                    <span id="preview-category" class="badge bg-secondary"></span>
+                    <span id="preview-status" class="badge bg-info"></span>
+                </div>
+
+                <div id="preview-tags" class="mb-3"></div>
+
+                <hr>
+
+                <p id="preview-content" class="text-muted">
+                    Тут буде текст поста...
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const titleInput = document.getElementById("id_title");
+    const contentInput = document.getElementById("id_content");
+    const categoryInput = document.getElementById("id_category");
+    const tagsInput = document.getElementById("id_tags");
+    const imageInput = document.getElementById("id_image");
+    const statusInput = document.getElementById("id_status");
+
+    const previewTitle = document.getElementById("preview-title");
+    const previewContent = document.getElementById("preview-content");
+    const previewCategory = document.getElementById("preview-category");
+    const previewTags = document.getElementById("preview-tags");
+    const previewImage = document.getElementById("preview-image");
+    const previewStatus = document.getElementById("preview-status");
+
+    // Назва
+    titleInput.addEventListener("input", () => {
+        previewTitle.textContent = titleInput.value || "Назва поста";
+    });
+
+    // Текст
+    contentInput.addEventListener("input", () => {
+        previewContent.textContent = contentInput.value || "Тут буде текст поста...";
+    });
+
+    // Категорія
+    categoryInput.addEventListener("change", () => {
+        previewCategory.textContent = categoryInput.options[categoryInput.selectedIndex].text;
+    });
+
+    // Статус
+    statusInput.addEventListener("change", () => {
+        previewStatus.textContent = statusInput.options[statusInput.selectedIndex].text;
+    });
+
+    // Теги
+    tagsInput.addEventListener("change", () => {
+        previewTags.innerHTML = "";
+        Array.from(tagsInput.selectedOptions).forEach(option => {
+            const span = document.createElement("span");
+            span.className = "badge bg-primary me-1";
+            span.textContent = option.text;
+            previewTags.appendChild(span);
+        });
+    });
+
+    // Фото preview
+    imageInput.addEventListener("change", () => {
+        const file = imageInput.files[0];
+        if (file) {
+            previewImage.src = URL.createObjectURL(file);
+            previewImage.classList.remove("d-none");
+        }
+    });
+</script>
 
 {% endblock %}

@@ -7,4 +7,6 @@ urlpatterns = [
     path('create/', views.create_post, name='create_post'),  # створення поста
     path('profile/', views.profile_view, name='profile'),  # мій профіль
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('my-drafts/', views.my_drafts, name='my_drafts'), # мої чернетки
+    path('post/<int:pk>/edit/', views.edit_post, name='edit_post'), # редагування поста
 ]

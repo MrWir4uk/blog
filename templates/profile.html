@@ -1,62 +1,116 @@
 {% extends 'base.html' %}
-
 {% block title %}Профіль {{ profile.user.username }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
 
-    <!-- Профіль користувача -->
-    <div class="card shadow-sm p-4 mb-4">
-        <div class="row align-items-center">
-            
-            <!-- Аватарка -->
-            <div class="col-md-3 text-center">
-                {% if profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" class="img-fluid rounded-circle border border-2" width="150">
-                {% else %}
-                    <img src="https://via.placeholder.com/150" class="img-fluid rounded-circle border border-2">
-                {% endif %}
-            </div>
+  <!-- ===== ПРОФІЛЬ ===== -->
+  <div class="card shadow-sm p-4 mb-4 bg-dark text-light">
+    <div class="row align-items-center">
 
-            <!-- Інформація про користувача -->
-            <div class="col-md-9">
-                <h2 class="mb-2">{{ profile.user.username }}</h2>
-                <p class="mb-1"><strong>Роль:</strong> {{ profile.get_role_display }}</p>
-                <p class="mb-1"><strong>Email:</strong> {{ profile.user.email }}</p>
-                <p class="mb-0"><strong>Кількість постів:</strong> {{ profile.user.posts.count }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Останні пости -->
-    <h4 class="mb-3">Останні пости</h4>
-    <div class="row">
-        {% for post in profile.user.posts.all|slice:":3" %}
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="{{ post.title }}">
-                {% endif %}
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ post.title }}</h5>
-                    <p class="card-text text-truncate">{{ post.content|truncatewords:20 }}</p>
-                    <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary mt-auto">Переглянути</a>
-                </div>
-                <div class="card-footer text-muted">
-                    {{ post.created_at|date:"d M Y" }}
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <p>Користувач ще не опублікував жодного поста.</p>
-        {% endfor %}
-    </div>
-        {% if request.user == profile.user %}
-            <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary mb-3">Редагувати профіль</a>
+      <!-- Аватарка -->
+      <div class="col-md-3 text-center">
+        {% if profile.avatar %}
+          <img src="{{ profile.avatar.url }}" class="rounded-circle border border-2" width="150" height="150">
+        {% else %}
+          <img src="https://via.placeholder.com/150" class="rounded-circle border border-2" width="150" height="150">
         {% endif %}
+      </div>
 
+      <!-- Інформація -->
+      <div class="col-md-9">
+        <h2 class="mb-2 text-info">{{ profile.user.username }}</h2>
+        <p class="mb-1"><strong>Роль:</strong> {{ profile.get_role_display }}</p>
+        <p class="mb-1"><strong>Email:</strong> {{ profile.user.email }}</p>
+        <p class="mb-0"><strong>Кількість постів:</strong> {{ profile.user.posts.count }}</p>
+
+        {% if request.user == profile.user %}
+        <div class="mt-3">
+          <a href="{% url 'edit_profile' %}" class="btn btn-info me-2">Редагувати профіль</a>
+          <a href="{% url 'my_drafts' %}" class="btn btn-outline-warning">📝 Мої чернетки</a>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== ОСТАННІ ПОСТИ ===== -->
+  <h4 class="mb-3">Останні пости</h4>
+  <div class="row">
+    {% for post in posts|slice:":3" %}
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 shadow-sm bg-dark text-light">
+        {% if post.image %}
+          <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+        {% else %}
+          <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="{{ post.title }}">
+        {% endif %}
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-text text-truncate">{{ post.content|truncatewords:20 }}</p>
+          <a href="{% url 'post_detail' post.pk %}" class="btn btn-info mt-auto">Переглянути</a>
+        </div>
+        <div class="card-footer text-muted bg-secondary">
+          {{ post.created_at|date:"d M Y" }}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+      <p>Користувач ще не опублікував жодного поста.</p>
+    {% endfor %}
+  </div>
 
 </div>
 {% endblock %}
+
+<style>
+/* ===== Темний профіль ===== */
+.bg-dark {
+    background-color: #1b1b2f !important;
+}
+
+.text-light {
+    color: #e6e6e6 !important;
+}
+
+.card.bg-dark {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card.bg-dark:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px #00ffffaa;
+}
+
+.rounded-circle {
+    object-fit: cover;
+}
+
+/* Кнопки неонові */
+.btn-info {
+    background: linear-gradient(135deg, #00ffff, #0d6efd);
+    border: none;
+    color: #000;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(0,255,255,0.5);
+    transition: 0.3s ease;
+}
+
+.btn-info:hover {
+    box-shadow: 0 0 20px rgba(0,255,255,0.8);
+    transform: scale(1.05);
+}
+
+.btn-outline-warning {
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-outline-warning:hover {
+    box-shadow: 0 0 15px #00ffffaa;
+    transform: scale(1.05);
+}
+</style>
