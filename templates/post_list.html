@@ -19,6 +19,15 @@ body {
     text-shadow: 0 0 15px rgba(0,255,255,0.7);
 }
 
+/* CATEGORY BAR */
+.category-bar {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:30px;
+}
+
 /* POSTS GRID */
 .posts-grid {
     display: grid;
@@ -87,11 +96,12 @@ body {
     background: transparent;
     border: 2px solid #0ff;
     color: #0ff;
-    padding: 10px 25px;
+    padding: 8px 18px;
     border-radius: 10px;
     font-weight: bold;
     text-decoration: none;
-    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+    box-shadow: 0 0 15px #0ff;
+    transition: 0.3s;
 }
 
 .neon-btn-outline:hover {
@@ -99,10 +109,15 @@ body {
     color: #000;
     box-shadow: 0 0 25px #0ff, 0 0 50px #0ff;
 }
+
+.active-category {
+    background:#0ff;
+    color:#000;
+}
 </style>
 
 
-<!-- ===== HERO ===== -->
+<!-- HERO -->
 <div class="hero glass mb-5 text-center">
     {% if user.is_authenticated %}
         <h1>Привіт, <span class="neon-text">{{ user.username }}</span> 👋</h1>
@@ -120,25 +135,69 @@ body {
     {% endif %}
 </div>
 
-<!-- ===== POSTS GRID ===== -->
+<!-- TAG FILTER -->
+{% if tags %}
+<div class="category-bar mt-2">
+    <a href="?category={{ selected_category }}" class="neon-btn-outline {% if not selected_tag %}active-category{% endif %}">
+        Всі теги
+    </a>
+    {% for tag in tags %}
+    <a href="?category={{ selected_category }}&tag={{ tag.id }}"
+       class="neon-btn-outline {% if selected_tag == tag.id|stringformat:'s' %}active-category{% endif %}">
+        {{ tag.name }}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+<!-- CATEGORY FILTER -->
+<div class="category-bar">
+
+<a href="?category=all"
+class="neon-btn-outline {% if not selected_category or selected_category == 'all' %}active-category{% endif %}">
+Всі
+</a>
+
+{% for cat in categories %}
+<a href="?category={{ cat.id }}"
+class="neon-btn-outline {% if selected_category == cat.id|stringformat:'s' %}active-category{% endif %}">
+{{ cat.name }}
+</a>
+{% endfor %}
+
+</div>
+
+
+<!-- POSTS GRID -->
 <div class="posts-grid">
 {% for post in posts %}
     <a href="/post/{{ post.id }}/" class="post-preview glass">
+
         {% if post.image %}
             <img src="{{ post.image.url }}" class="post-thumb">
         {% endif %}
+
         <div class="p-3">
+
             <h3>{{ post.title }}</h3>
+
             <div class="post-meta">
                 <span>👤 {{ post.author.username }}</span>
                 <span>📂 {{ post.category }}</span>
             </div>
-            <p class="text-muted">{{ post.content|truncatewords:18 }}</p>
+
+            <p class="text-muted">
+                {{ post.content|truncatewords:18 }}
+            </p>
+
         </div>
+
     </a>
+
+
+
 {% empty %}
-    <p class="text-muted">Поки що немає постів 😢</p>
+    <p class="text-muted text-center">Поки що немає постів 😢</p>
 {% endfor %}
 </div>
-{% endblock %}
 
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Post, Comment
+from .models import Post, Comment, Category, Tag
 from .forms import PostForm, ProfileForm
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -10,8 +10,30 @@ from .forms import CommentForm
 
 
 def post_list(request):
+    category_id = request.GET.get("category")
+    tag_id = request.GET.get("tag")
+
     posts = Post.objects.filter(status='published')
-    return render(request, 'post_list.html', {'posts': posts})
+    categories = Category.objects.all()
+    tags = None  # теги вибраної категорії
+
+    # Фільтр по категорії
+    if category_id and category_id != "all":
+        posts = posts.filter(category_id=category_id)
+        # отримуємо всі теги цієї категорії
+        tags = Tag.objects.filter(category_id=category_id)
+
+    # Фільтр по тегу
+    if tag_id:
+        posts = posts.filter(tags__id=tag_id)
+
+    return render(request, 'post_list.html', {
+        'posts': posts,
+        'categories': categories,
+        'tags': tags,
+        'selected_category': category_id,
+        'selected_tag': tag_id
+    })
 
 
 

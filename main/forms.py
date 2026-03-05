@@ -24,19 +24,46 @@ class PostForm(forms.ModelForm):
 
 
 
+from django import forms
+from .models import Profile
+
 class ProfileForm(forms.ModelForm):
+    # Нікнейм як окреме поле, не через Meta, бо це поле User
     username = forms.CharField(
         max_length=150,
         label="Нікнейм",
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введіть ваш нікнейм'
+        })
     )
 
     class Meta:
         model = Profile
-        fields = ['avatar']
+        fields = ['avatar']  # аватар беремо з моделі Profile
         widgets = {
-            'avatar': forms.FileInput(attrs={'class': 'form-control'}),
+            'avatar': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'  # обмеження на тип файлу
+            }),
         }
+
+    def __init__(self, *args, **kwargs):
+        # Можемо передати початковий username
+        initial_username = kwargs.pop('initial_username', None)
+        super().__init__(*args, **kwargs)
+        if initial_username:
+            self.fields['username'].initial = initial_username
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        # username зберігаємо окремо в User
+        if self.cleaned_data.get('username'):
+            profile.user.username = self.cleaned_data['username']
+            profile.user.save()
+        if commit:
+            profile.save()
+        return profile
 
 
 class CommentForm(forms.ModelForm):

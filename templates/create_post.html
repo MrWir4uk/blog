@@ -12,31 +12,37 @@
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
+                    <!-- Назва -->
                     <div class="mb-3">
                         <label class="form-label">Назва</label>
                         {{ form.title }}
                     </div>
 
+                    <!-- Текст -->
                     <div class="mb-3">
                         <label class="form-label">Текст</label>
                         {{ form.content }}
                     </div>
 
+                    <!-- Категорія -->
                     <div class="mb-3">
                         <label class="form-label">Категорія</label>
                         {{ form.category }}
                     </div>
 
+                    <!-- Теги (будуть оновлюватися JS) -->
                     <div class="mb-3">
                         <label class="form-label">Теги</label>
                         {{ form.tags }}
                     </div>
 
+                    <!-- Зображення -->
                     <div class="mb-3">
                         <label class="form-label">Зображення</label>
                         {{ form.image }}
                     </div>
 
+                    <!-- Статус -->
                     <div class="mb-3">
                         <label class="form-label">Статус</label>
                         {{ form.status }}
@@ -76,60 +82,70 @@
     </div>
 </div>
 {{ form.media.css }}
+
+<!-- JS для live preview і динамічних тегів -->
 <script>
-    const titleInput = document.getElementById("id_title");
-    const contentInput = document.getElementById("id_content");
-    const categoryInput = document.getElementById("id_category");
-    const tagsInput = document.getElementById("id_tags");
-    const imageInput = document.getElementById("id_image");
-    const statusInput = document.getElementById("id_status");
+const titleInput = document.getElementById("id_title");
+const contentInput = document.getElementById("id_content");
+const categoryInput = document.getElementById("id_category");
+const tagsInput = document.getElementById("id_tags");
+const imageInput = document.getElementById("id_image");
+const statusInput = document.getElementById("id_status");
 
-    const previewTitle = document.getElementById("preview-title");
-    const previewContent = document.getElementById("preview-content");
-    const previewCategory = document.getElementById("preview-category");
-    const previewTags = document.getElementById("preview-tags");
-    const previewImage = document.getElementById("preview-image");
-    const previewStatus = document.getElementById("preview-status");
+const previewTitle = document.getElementById("preview-title");
+const previewContent = document.getElementById("preview-content");
+const previewCategory = document.getElementById("preview-category");
+const previewTags = document.getElementById("preview-tags");
+const previewImage = document.getElementById("preview-image");
+const previewStatus = document.getElementById("preview-status");
 
-    // Назва
-    titleInput.addEventListener("input", () => {
-        previewTitle.textContent = titleInput.value || "Назва поста";
+// Live preview для назви
+titleInput.addEventListener("input", () => {
+    previewTitle.textContent = titleInput.value || "Назва поста";
+});
+
+// Live preview для тексту
+contentInput.addEventListener("input", () => {
+    previewContent.textContent = contentInput.value || "Тут буде текст поста...";
+});
+
+// Live preview для категорії
+categoryInput.addEventListener("change", () => {
+    previewCategory.textContent = categoryInput.options[categoryInput.selectedIndex].text;
+
+    // Динамічно показуємо тільки теги цієї категорії
+    Array.from(tagsInput.options).forEach(option => {
+        option.style.display = option.dataset.category == categoryInput.value ? "block" : "none";
+        option.selected = false; // скидати вибір при зміні категорії
     });
 
-    // Текст
-    contentInput.addEventListener("input", () => {
-        previewContent.textContent = contentInput.value || "Тут буде текст поста...";
-    });
+    previewTags.innerHTML = ""; // чистимо прев’ю тегів
+});
 
-    // Категорія
-    categoryInput.addEventListener("change", () => {
-        previewCategory.textContent = categoryInput.options[categoryInput.selectedIndex].text;
-    });
+// Live preview для статусу
+statusInput.addEventListener("change", () => {
+    previewStatus.textContent = statusInput.options[statusInput.selectedIndex].text;
+});
 
-    // Статус
-    statusInput.addEventListener("change", () => {
-        previewStatus.textContent = statusInput.options[statusInput.selectedIndex].text;
+// Live preview для тегів
+tagsInput.addEventListener("change", () => {
+    previewTags.innerHTML = "";
+    Array.from(tagsInput.selectedOptions).forEach(option => {
+        const span = document.createElement("span");
+        span.className = "badge bg-primary me-1";
+        span.textContent = option.text;
+        previewTags.appendChild(span);
     });
+});
 
-    // Теги
-    tagsInput.addEventListener("change", () => {
-        previewTags.innerHTML = "";
-        Array.from(tagsInput.selectedOptions).forEach(option => {
-            const span = document.createElement("span");
-            span.className = "badge bg-primary me-1";
-            span.textContent = option.text;
-            previewTags.appendChild(span);
-        });
-    });
-
-    // Фото preview
-    imageInput.addEventListener("change", () => {
-        const file = imageInput.files[0];
-        if (file) {
-            previewImage.src = URL.createObjectURL(file);
-            previewImage.classList.remove("d-none");
-        }
-    });
+// Live preview для фото
+imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (file) {
+        previewImage.src = URL.createObjectURL(file);
+        previewImage.classList.remove("d-none");
+    }
+});
 </script>
 
 {% endblock %}
