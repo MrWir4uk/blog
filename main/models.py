@@ -64,7 +64,7 @@ class Post(models.Model):
     )
 
     title = models.CharField(max_length=200)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+ 
 
     author = models.ForeignKey(
         User,

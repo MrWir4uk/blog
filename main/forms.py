@@ -6,26 +6,27 @@ from .models import Comment
 
 class TagWigget(s2forms.ModelSelect2Widget):
     search_fields = [
-        "name__icontains", 
+        "name__icontains",
     ]
+    dependent_fields = {
+        "category": "category"
+    }
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'content', 'category', 'tags', 'image', 'status']
-        # widgets = {
-        #     "tags": TagWigget,
-        # }
+        widgets = {
+            "tags": TagWigget(),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'form-control mb-2', })
 
+            
 
-
-from django import forms
-from .models import Profile
 
 class ProfileForm(forms.ModelForm):
     # Нікнейм як окреме поле, не через Meta, бо це поле User

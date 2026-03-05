@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-{{ form.media.css }}
+{{ form.media }}
 <div class="container mt-5">
     <div class="row">
 
@@ -81,8 +81,13 @@
 
     </div>
 </div>
-{{ form.media.css }}
 
+
+
+
+{% endblock %}
+
+{% block extra_js %}
 <!-- JS для live preview і динамічних тегів -->
 <script>
 const titleInput = document.getElementById("id_title");
@@ -147,5 +152,4 @@ imageInput.addEventListener("change", () => {
     }
 });
 </script>
-
 {% endblock %}
