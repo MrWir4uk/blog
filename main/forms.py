@@ -4,13 +4,18 @@ from django_select2 import forms as s2forms
 from .models import Comment
 
 
-class TagWigget(s2forms.ModelSelect2Widget):
+class TagWigget(s2forms.ModelSelect2MultipleWidget):
     search_fields = [
         "name__icontains",
     ]
     dependent_fields = {
         "category": "category"
     }
+    
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super().build_attrs(base_attrs, extra_attrs)
+        attrs['data-minimum-input-length'] = 0
+        return attrs
 
 class PostForm(forms.ModelForm):
     class Meta:
