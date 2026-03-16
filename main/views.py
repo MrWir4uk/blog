@@ -90,7 +90,8 @@ def create_post(request):
 @login_required
 def profile_view(request):
     profile = request.user.profile
-    return render(request, "profile.html", {'profile': profile})
+    posts = request.user.posts.filter(status='published').all() 
+    return render(request, "profile.html", {'profile': profile, 'posts': posts})
 
 
 @login_required

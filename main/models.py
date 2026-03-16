@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 @receiver(post_save, sender=User)
@@ -72,7 +73,7 @@ class Post(models.Model):
         related_name='posts'
     )
 
-    content = models.TextField()
+    content = RichTextUploadingField()
 
     category = models.ForeignKey(
         Category,
@@ -96,6 +97,10 @@ class Post(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+
 
     def average_rating(self):
         ratings = self.ratings.all()
@@ -151,3 +156,14 @@ class Rating(models.Model):
         return f"{self.post.title} - {self.value}"
     
 
+class PostImage(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="images"
+    )
+
+    image = models.ImageField(upload_to="post_images/")
+
+    def __str__(self):
+        return f"Image for {self.post.title}"

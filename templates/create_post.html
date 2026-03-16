@@ -1,156 +1,204 @@
 {% extends "base.html" %}
+
 {% block content %}
 {{ form.media }}
+
 <div class="container mt-5">
-    <div class="row">
+<div class="row">
 
-        <!-- ФОРМА -->
-        <div class="col-lg-6">
-            <div class="card bg-dark text-light shadow-lg p-4 rounded-4">
-                <h3 class="mb-4">✍️ Створити пост</h3>
+<!-- ФОРМА -->
+<div class="col-lg-6">
+<div class="card bg-dark text-light shadow-lg p-4 rounded-4">
 
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
+<h3 class="mb-4">✍️ Створити пост</h3>
 
-                    <!-- Назва -->
-                    <div class="mb-3">
-                        <label class="form-label">Назва</label>
-                        {{ form.title }}
-                    </div>
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
 
-                    <!-- Текст -->
-                    <div class="mb-3">
-                        <label class="form-label">Текст</label>
-                        {{ form.content }}
-                    </div>
-
-                    <!-- Категорія -->
-                    <div class="mb-3">
-                        <label class="form-label">Категорія</label>
-                        {{ form.category }}
-                    </div>
-
-                    <!-- Теги (будуть оновлюватися JS) -->
-                    <div class="mb-3">
-                        <label class="form-label">Теги</label>
-                        {{ form.tags }}
-                    </div>
-
-                    <!-- Зображення -->
-                    <div class="mb-3">
-                        <label class="form-label">Зображення</label>
-                        {{ form.image }}
-                    </div>
-
-                    <!-- Статус -->
-                    <div class="mb-3">
-                        <label class="form-label">Статус</label>
-                        {{ form.status }}
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">
-                        💾 Зберегти
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- PREVIEW -->
-        <div class="col-lg-6">
-            <div class="card shadow-lg p-4 rounded-4">
-
-                <img id="preview-image" class="img-fluid rounded mb-3 d-none">
-
-                <h3 id="preview-title">Назва поста</h3>
-
-                <div class="mb-2">
-                    <span id="preview-category" class="badge bg-secondary"></span>
-                    <span id="preview-status" class="badge bg-info"></span>
-                </div>
-
-                <div id="preview-tags" class="mb-3"></div>
-
-                <hr>
-
-                <p id="preview-content" class="text-muted">
-                    Тут буде текст поста...
-                </p>
-
-            </div>
-        </div>
-
-    </div>
+<div class="mb-3">
+<label class="form-label">Назва</label>
+{{ form.title }}
 </div>
 
+<div class="mb-3">
+<label class="form-label">Текст</label>
+{{ form.content }}
+</div>
 
+<div class="mb-3">
+<label class="form-label">Категорія</label>
+{{ form.category }}
+</div>
 
+<div class="mb-3">
+<label class="form-label">Теги</label>
+{{ form.tags }}
+</div>
+
+<div class="mb-3">
+<label class="form-label">Зображення</label>
+<input type="file" name="images" id="id_images" multiple class="form-control">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Статус</label>
+{{ form.status }}
+</div>
+
+<button type="submit" class="btn btn-primary w-100">
+💾 Зберегти
+</button>
+
+</form>
+</div>
+</div>
+
+<!-- PREVIEW -->
+<div class="col-lg-6">
+<div class="card shadow-lg p-4 rounded-4">
+
+<div id="preview-images" class="mb-3"></div>
+
+<h3 id="preview-title">Назва поста</h3>
+
+<div class="mb-2">
+<span id="preview-category" class="badge bg-secondary"></span>
+<span id="preview-status" class="badge bg-info"></span>
+</div>
+
+<div id="preview-tags" class="mb-3"></div>
+
+<hr>
+
+<div id="preview-content" class="post-content text-muted">
+Тут буде текст поста...
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
 
 {% endblock %}
 
+
 {% block extra_js %}
 {{ form.media }}
-<!-- JS для live preview і динамічних тегів -->
+
 <script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
 const titleInput = document.getElementById("id_title");
-const contentInput = document.getElementById("id_content");
 const categoryInput = document.getElementById("id_category");
 const tagsInput = document.getElementById("id_tags");
-const imageInput = document.getElementById("id_image");
+const imagesInput = document.getElementById("id_images");
 const statusInput = document.getElementById("id_status");
 
 const previewTitle = document.getElementById("preview-title");
 const previewContent = document.getElementById("preview-content");
 const previewCategory = document.getElementById("preview-category");
 const previewTags = document.getElementById("preview-tags");
-const previewImage = document.getElementById("preview-image");
+const previewImages = document.getElementById("preview-images");
 const previewStatus = document.getElementById("preview-status");
 
-// Live preview для назви
+
+// TITLE PREVIEW
 titleInput.addEventListener("input", () => {
-    previewTitle.textContent = titleInput.value || "Назва поста";
+previewTitle.textContent = titleInput.value || "Назва поста";
 });
 
-// Live preview для тексту
-contentInput.addEventListener("input", () => {
-    previewContent.textContent = contentInput.value || "Тут буде текст поста...";
-});
 
-// Live preview для категорії
+// CATEGORY PREVIEW
 categoryInput.addEventListener("change", () => {
-    previewCategory.textContent = categoryInput.options[categoryInput.selectedIndex].text;
 
-    // Динамічно показуємо тільки теги цієї категорії
-    Array.from(tagsInput.options).forEach(option => {
-        option.style.display = option.dataset.category == categoryInput.value ? "block" : "none";
-        option.selected = false; // скидати вибір при зміні категорії
-    });
+previewCategory.textContent =
+categoryInput.options[categoryInput.selectedIndex].text;
 
-    previewTags.innerHTML = ""; // чистимо прев’ю тегів
+Array.from(tagsInput.options).forEach(option => {
+
+option.style.display =
+option.dataset.category == categoryInput.value
+? "block"
+: "none";
+
+option.selected = false;
+
 });
 
-// Live preview для статусу
+previewTags.innerHTML = "";
+
+});
+
+
+// STATUS PREVIEW
 statusInput.addEventListener("change", () => {
-    previewStatus.textContent = statusInput.options[statusInput.selectedIndex].text;
+
+previewStatus.textContent =
+statusInput.options[statusInput.selectedIndex].text;
+
 });
 
-// Live preview для тегів
+
+// TAG PREVIEW
 tagsInput.addEventListener("change", () => {
-    previewTags.innerHTML = "";
-    Array.from(tagsInput.selectedOptions).forEach(option => {
-        const span = document.createElement("span");
-        span.className = "badge bg-primary me-1";
-        span.textContent = option.text;
-        previewTags.appendChild(span);
-    });
+
+previewTags.innerHTML = "";
+
+Array.from(tagsInput.selectedOptions).forEach(option => {
+
+const span = document.createElement("span");
+
+span.className = "badge bg-primary me-1";
+
+span.textContent = option.text;
+
+previewTags.appendChild(span);
+
 });
 
-// Live preview для фото
-imageInput.addEventListener("change", () => {
-    const file = imageInput.files[0];
-    if (file) {
-        previewImage.src = URL.createObjectURL(file);
-        previewImage.classList.remove("d-none");
-    }
 });
+
+
+// MULTIPLE IMAGE PREVIEW
+imagesInput.addEventListener("change", () => {
+
+previewImages.innerHTML = "";
+
+Array.from(imagesInput.files).forEach(file => {
+
+const img = document.createElement("img");
+
+img.src = URL.createObjectURL(file);
+
+img.className = "img-fluid rounded mb-2";
+
+img.style.maxHeight = "200px";
+img.style.marginRight = "10px";
+
+previewImages.appendChild(img);
+
+});
+
+});
+
+
+// CKEDITOR PREVIEW
+if (typeof CKEDITOR !== "undefined") {
+
+CKEDITOR.instances.id_content.on("change", function(){
+
+const data = CKEDITOR.instances.id_content.getData();
+
+previewContent.innerHTML = data || "Тут буде текст поста...";
+
+});
+
+}
+
+});
+
 </script>
+
 {% endblock %}

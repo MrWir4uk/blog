@@ -39,3 +39,10 @@
 .select2-container--default .select2-selection--multiple .select2-selection__rendered li.select2-search--inline .select2-search__field {
     color: #e6e6e6 !important;
 }
+
+
+#preview-images img{
+max-width:100%;
+border-radius:10px;
+margin-bottom:10px;
+}

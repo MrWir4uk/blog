@@ -41,10 +41,29 @@ INSTALLED_APPS = [
     "django_select2",
     'main',
     'accounts',
-    
-
-
+    'ckeditor',
+    'ckeditor_uploader',
 ]
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+
+# Проста конфігурація редактора
+CKEDITOR_CONFIGS = {
+    'default': {
+        'width': '100%',
+        'height': 300,
+        'toolbar': [
+            ['Bold', 'Italic', 'Underline'],        # жирний, курсив, підкреслення
+            ['NumberedList', 'BulletedList'],       # списки
+            ['Link', 'Unlink'],                     # посилання
+            ['Format'],                             # заголовки
+            ['Undo', 'Redo'],
+        ],
+        'removePlugins': 'elementspath,image,uploadimage',  # прибираємо картинки
+        'resize_enabled': False,
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -126,7 +145,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Login configuration
 LOGIN_URL = '/login/'
