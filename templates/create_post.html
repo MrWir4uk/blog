@@ -3,14 +3,14 @@
 {% block content %}
 {{ form.media }}
 
-<div class="container mt-5">
+
 <div class="row">
 
 <!-- ФОРМА -->
 <div class="col-lg-6">
-<div class="card bg-dark text-light shadow-lg p-4 rounded-4">
+<div class="neon-card p-4">
 
-<h3 class="mb-4">✍️ Створити пост</h3>
+<h3 class="mb-4 text-info">✍️ Створити пост</h3>
 
 <form method="post" enctype="multipart/form-data">
 {% csrf_token %}
@@ -55,11 +55,11 @@
 
 <!-- PREVIEW -->
 <div class="col-lg-6">
-<div class="card shadow-lg p-4 rounded-4">
+<div class="neon-card p-4">
 
 <div id="preview-images" class="mb-3"></div>
 
-<h3 id="preview-title">Назва поста</h3>
+<h3 id="preview-title" class="text-info">Назва поста</h3>
 
 <div class="mb-2">
 <span id="preview-category" class="badge bg-secondary"></span>
@@ -70,7 +70,7 @@
 
 <hr>
 
-<div id="preview-content" class="post-content text-muted">
+<div id="preview-content" class="post-content">
 Тут буде текст поста...
 </div>
 
@@ -150,7 +150,7 @@ Array.from(tagsInput.selectedOptions).forEach(option => {
 
 const span = document.createElement("span");
 
-span.className = "badge bg-primary me-1";
+span.className = "neon-badge me-1";
 
 span.textContent = option.text;
 

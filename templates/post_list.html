@@ -1,203 +1,98 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-body {
-    background-color: #000;
-    font-family: 'Orbitron', sans-serif;
-    color: #fff;
-}
 
-/* HERO */
-.hero {
-    padding: 50px 30px;
-    border-radius: 25px;
-    margin-bottom: 40px;
-}
-.neon-text {
-    color: #0ff;
-    text-shadow: 0 0 15px rgba(0,255,255,0.7);
-}
+<div class="container mt-4">
+  <div class="row">
 
-/* CATEGORY BAR */
-.category-bar {
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
-    margin-bottom:30px;
-}
+    <!-- ===== SIDEBAR: CATEGORIES & TAGS ===== -->
+    <div class="col-md-3 mb-4">
 
-/* POSTS GRID */
-.posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-}
+      <!-- Категорії -->
+      <h5 class="text-light mb-2">Категорії</h5>
+      <div class="d-flex flex-column gap-2 mb-4">
+        <a href="?category=all" class="btn neon-btn-outline {% if selected_category == 'all' %}active-category{% endif %}">Всі</a>
+        {% for cat in categories %}
+          <a href="?category={{ cat.id }}" class="btn neon-btn-outline {% if selected_category == cat.id|stringformat:'s' %}active-category{% endif %}">
+            {{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
 
-/* POST CARD */
-.post-preview {
-    display: block;
-    text-decoration: none;
-    color: #fff;
-    background: rgba(20,20,20,0.8);
-    border: 2px solid #0ff;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.post-preview:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 0 30px #0ff, 0 0 60px #0ff;
-}
-
-.post-thumb {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-bottom: 2px solid #0ff;
-}
-
-.post-preview h3 {
-    margin: 10px 0;
-    color: #0ff;
-    text-shadow: 0 0 8px #0ff;
-}
-
-.post-meta span {
-    color: #9aa0a6;
-    text-shadow: 0 0 5px rgba(0,255,255,0.5);
-    margin-right: 10px;
-}
-
-.post-preview p {
-    color: #ccc;
-}
-
-/* BUTTONS */
-.neon-btn {
-    background: #0ff;
-    color: #000;
-    padding: 10px 25px;
-    border-radius: 10px;
-    font-weight: bold;
-    text-decoration: none;
-    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
-    transition: 0.3s;
-}
-
-.neon-btn:hover {
-    box-shadow: 0 0 25px #0ff, 0 0 50px #0ff;
-}
-
-.neon-btn-outline {
-    background: transparent;
-    border: 2px solid #0ff;
-    color: #0ff;
-    padding: 8px 18px;
-    border-radius: 10px;
-    font-weight: bold;
-    text-decoration: none;
-    box-shadow: 0 0 15px #0ff;
-    transition: 0.3s;
-}
-
-.neon-btn-outline:hover {
-    background: #0ff;
-    color: #000;
-    box-shadow: 0 0 25px #0ff, 0 0 50px #0ff;
-}
-
-.active-category {
-    background:#0ff;
-    color:#000;
-}
-</style>
-
-
-<!-- HERO -->
-<div class="hero glass mb-5 text-center">
-    {% if user.is_authenticated %}
-        <h1>Привіт, <span class="neon-text">{{ user.username }}</span> 👋</h1>
-        <p class="text-muted">Готовий написати щось нове?</p>
-
-        <div class="d-flex justify-content-center gap-3 mt-3">
-            <a href="/profile/" class="btn neon-btn">Профіль</a>
-            <a href="/create/" class="btn neon-btn-outline">Новий пост</a>
+      <!-- Теги -->
+      {% if selected_category and selected_category != 'all' %}
+        <h5 class="text-light mb-2">Теги</h5>
+        <div class="d-flex flex-column gap-2 mb-4" style="max-height: 300px; overflow-y: auto;">
+          {% for tag in tags %}
+            {% if tag.category.id|stringformat:'s' == selected_category|stringformat:'s' %}
+              <a href="?category={{ selected_category }}&tag={{ tag.id }}" 
+                 class="btn neon-btn-outline {% if selected_tag == tag.id|stringformat:'s' %}active-category{% endif %}">
+                {{ tag.name }}
+              </a>
+            {% endif %}
+          {% endfor %}
         </div>
-    {% else %}
-        <h1>Ласкаво просимо 🚀</h1>
-        <p class="text-muted">Увійди, щоб писати та читати пости</p>
+      {% endif %}
 
-        <a href="/accounts/login/" class="btn neon-btn mt-3">Увійти</a>
-    {% endif %}
-</div>
+    </div>
 
-<!-- TAG FILTER -->
-{% if tags %}
-<div class="category-bar mt-2">
-    <a href="?category={{ selected_category }}" class="neon-btn-outline {% if not selected_tag %}active-category{% endif %}">
-        Всі теги
-    </a>
-    {% for tag in tags %}
-    <a href="?category={{ selected_category }}&tag={{ tag.id }}"
-       class="neon-btn-outline {% if selected_tag == tag.id|stringformat:'s' %}active-category{% endif %}">
-        {{ tag.name }}
-    </a>
-    {% endfor %}
-</div>
-{% endif %}
-<!-- CATEGORY FILTER -->
-<div class="category-bar">
-
-<a href="?category=all"
-class="neon-btn-outline {% if not selected_category or selected_category == 'all' %}active-category{% endif %}">
-Всі
-</a>
-
-{% for cat in categories %}
-<a href="?category={{ cat.id }}"
-class="neon-btn-outline {% if selected_category == cat.id|stringformat:'s' %}active-category{% endif %}">
-{{ cat.name }}
-</a>
-{% endfor %}
-
-</div>
-
-
-<!-- POSTS GRID -->
-<div class="posts-grid">
-{% for post in posts %}
-    <a href="/post/{{ post.id }}/" class="post-preview glass">
-
-        {% if post.image %}
-            <img src="{{ post.image.url }}" class="post-thumb">
-        {% endif %}
-
-        <div class="p-3">
-
-            <h3>{{ post.title }}</h3>
-
-            <div class="post-meta">
-                <span>👤 {{ post.author.username }}</span>
-                <span>📂 {{ post.category }}</span>
+    <!-- ===== POSTS GRID ===== -->
+    <div class="col-md-9">
+      <!-- HERO -->
+      <div class="hero glass mb-4 text-center">
+        {% if user.is_authenticated %}
+            <h1>Привіт, <span class="neon-text">{{ user.username }}</span> 👋</h1>
+            <p class="text-muted">Готовий написати щось нове?</p>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="/profile/" class="btn neon-btn">Профіль</a>
+                <a href="/create/" class="btn neon-btn-outline">Новий пост</a>
             </div>
+        {% else %}
+            <h1>Ласкаво просимо 🚀</h1>
+            <p class="text-muted">Увійди, щоб писати та читати пости</p>
+            <a href="/accounts/login/" class="btn neon-btn mt-3">Увійти</a>
+        {% endif %}
+      </div>
 
-            <p class="text-muted">
-                {{ post.content|truncatewords:18 }}
-            </p>
+      <!-- POSTS GRID -->
+      <div class="posts-grid">
+        {% for post in posts %}
+            
+          <a href="/post/{{ post.id }}/" class="neon-card post-preview">
 
-        </div>
+              {% if post.image %}
+                  <img src="{{ post.image.url }}" class="post-thumb">
+              {% else %}
+                  <img src="/static/images/default-post.png" class="post-thumb">
+              {% endif %}
+                {% for post in posts %}
+                <div class="neon-card post-card" style="position: relative; margin-bottom:20px;">
+                    <h3>{{ post.title }}</h3>
+                    <p>Категорія: {{ post.category.name }} — Середній рейтинг: {{ post.average_rating }}</p>
 
-    </a>
+                    <p>Оціни пост:</p>
+                    {% for i in rating_range %}
+                        <a href="{% url 'rate_post' post.id i %}" class="btn btn-sm btn-outline-primary">{{ i }}</a>
+                    {% endfor %}
+                {% endfor %}
+              <div class="p-3">
+                  <h3>{{ post.title }}</h3>
+                  <div class="post-meta">
+                      <span>👤 {{ post.author.username }}</span>
+                      <span>📂 {{ post.category }}</span>
+                  </div>
+                  <p class="text-muted">{{ post.content|truncatewords:18 }}</p>
+              </div>
 
-
-
-{% empty %}
-    <p class="text-muted text-center">Поки що немає постів 😢</p>
-{% endfor %}
+          </a>
+        {% empty %}
+          <p class="text-muted text-center">Поки що немає постів 😢</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>
+
+
 
 {% endblock %}

@@ -8,8 +8,12 @@
     {% for post in drafts %}
         <div class="card mb-3 p-3 shadow-sm">
             <h5>{{ post.title }}</h5>
-            <a href="{% url 'edit_post' post.pk %}" class="btn btn-sm btn-outline-primary">
+            <a href="{% url 'edit_post' post.pk %}" class="btn btn-sm neon-btn-outline">
                 Редагувати
+            </a>
+            <!-- кнопка видалення -->
+            <a href="{% url 'delete_draft' post.id %}" class="btn btn-danger btn-sm mt-2">
+                Видалити чернетку
             </a>
         </div>
     {% empty %}

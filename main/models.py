@@ -57,49 +57,55 @@ class Tag(models.Model):
         return self.name
 
 
-class Post(models.Model):
+from django.db import models
+from django.contrib.auth.models import User
+from django.db.models import Avg
+from ckeditor_uploader.fields import RichTextUploadingField
 
+class Post(models.Model):
     STATUS_CHOICES = (
         ('draft', 'Чернетка'),
         ('published', 'Опубліковано'),
     )
 
     title = models.CharField(max_length=200)
- 
-
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='posts'
     )
-
     content = RichTextUploadingField()
-
     category = models.ForeignKey(
-        Category,
+        'Category',
         on_delete=models.CASCADE,
         related_name='posts'
     )
-
-    tags = models.ManyToManyField(Tag, blank=True)
-
+    tags = models.ManyToManyField('Tag', blank=True)
     image = models.ImageField(
         upload_to='post_images/',
         blank=True,
         null=True
     )
-
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
         default='draft'
     )
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def average_rating(self):
+        ratings = self.ratings.all()
+        if ratings.exists():
+            return round(sum(r.value for r in ratings) / ratings.count(), 1)
+        return 0
 
 
     def average_rating(self):
@@ -133,21 +139,12 @@ class Comment(models.Model):
         return f"Коментар від {self.author.username}"
 
 
+
 class Rating(models.Model):
-    post = models.ForeignKey(
-        Post,
-        on_delete=models.CASCADE,
-        related_name='ratings'
-    )
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-
-    value = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)]
-    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    value = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    
 
     class Meta:
         unique_together = ('post', 'user')

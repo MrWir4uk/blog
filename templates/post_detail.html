@@ -1,176 +1,77 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-body {
-    background-color: #000;
-    font-family: 'Orbitron', sans-serif;
-    color: #fff;
-}
 
-/* ===== POST CARD ===== */
-.post-card {
-    background: rgba(20, 20, 20, 0.8);
-    border: 2px solid #0ff;
-    border-radius: 15px;
-    padding: 25px;
-    max-width: 700px;
-    margin: 30px auto;
-    box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
+<div class="neon-card mx-auto p-4" style="max-width: 700px; background-color: rgba(30,30,30,0.9); border-radius: 15px;">
 
-.post-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 30px #0ff, 0 0 60px #0ff, 0 0 90px #0ff;
-}
+    <!-- Заголовок поста -->
+    <h1 class="mb-3" style="word-break: break-word;">{{ post.title }}</h1>
 
-.post-card img.post-image {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 15px 0;
-    border-radius: 10px;
-    border: 2px solid #0ff;
-    box-shadow: 0 0 15px #0ff;
-}
+    <!-- Інформація про автора, категорію, статус -->
+    <p class="mb-2"><strong>Автор:</strong> {{ post.author.username }}</p>
+    <p class="mb-2"><strong>Категорія:</strong> {{ post.category }}</p>
+    <!-- <p class="mb-3"><strong>Статус:</strong> {{ post.status }}</p> -->
 
-.post-card a.back-link {
-    color: #0ff;
-    font-weight: bold;
-    text-decoration: none;
-    text-shadow: 0 0 5px #0ff;
-}
-
-.post-card a.back-link:hover {
-    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-}
-
-.post-card .created {
-    font-size: 0.9em;
-    color: #0ff;
-    text-shadow: 0 0 5px #0ff;
-}
-
-/* ===== COMMENTS ===== */
-.comments-list .comment {
-    display: flex;
-    align-items: start;
-    gap: 10px;
-    background: rgba(30, 30, 30, 0.9);
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid #0ff;
-    box-shadow: 0 0 8px #0ff;
-    position: relative;
-}
-
-.comments-list .comment img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #0ff;
-    box-shadow: 0 0 8px #0ff;
-}
-
-.comment-actions {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    display: flex;
-    gap: 5px;
-}
-
-.comment-actions a {
-    padding: 4px 8px;
-    font-size: 0.75rem;
-    border-radius: 5px;
-    text-decoration: none;
-    color: #000;
-    transition: 0.3s;
-}
-
-.comment-actions a.btn-warning {
-    background: #ff0;
-    box-shadow: 0 0 8px #ff0, 0 0 16px #ff0;
-}
-
-.comment-actions a.btn-warning:hover {
-    box-shadow: 0 0 16px #ff0, 0 0 32px #ff0;
-}
-
-.comment-actions a.btn-danger {
-    background: #f00;
-    box-shadow: 0 0 8px #f00, 0 0 16px #f00;
-}
-
-.comment-actions a.btn-danger:hover {
-    box-shadow: 0 0 16px #f00, 0 0 32px #f00;
-}
-
-textarea.form-control {
-    background: rgba(30,30,30,0.9);
-    border: 2px solid #0ff;
-    color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 8px #0ff;
-    resize: none;
-}
-</style>
-
-<div class="post-card">
-    <h1>{{ post.title }}</h1>
-
-    <p><strong>Автор:</strong> {{ post.author.username }}</p>
-    <p><strong>Категорія:</strong> {{ post.category }}</p>
-    <p><strong>Статус:</strong> {{ post.status }}</p>
-        <!-- Теги поста -->
+    <!-- Теги поста -->
     {% if post.tags.all %}
-    <div class="mb-2">
+    <div class="mb-3">
         {% for tag in post.tags.all %}
-        <span class="badge bg-primary me-1">{{ tag.name }}</span>
+        <span class="badge bg-primary me-1 mb-1">{{ tag.name }}</span>
         {% endfor %}
     </div>
     {% endif %}
+
+    <!-- Зображення поста -->
     {% if post.image %}
-        <img src="{{ post.image.url }}" class="post-image">
+        <img src="{{ post.image.url }}" class="post-image mb-3" style="width: 100%; border-radius: 10px;">
     {% endif %}
 
-    <p>{{ post.content }}</p>
-    <p class="created">Створено: {{ post.created_at }}</p>
+    <!-- Контент поста -->
+    <div class="post-content mb-3" style="line-height: 1.6; font-size: 1.05rem;">
+        {{ post.content|safe }}
+    </div>
 
-    <h4 class="mt-4">Коментарі</h4>
+    <p class="created mb-3">Створено: {{ post.created_at }}</p>
+
+    <!-- Кнопка видалення поста -->
+    {% if user == post.author %}
+        <a href="{% url 'delete_post' post.id %}" class="btn btn-danger mb-4"
+           onclick="return confirm('Видалити пост?');">Видалити пост</a>
+    {% endif %}
+
+    <!-- Коментарі -->
+    <h4 class="mt-4 mb-3">Коментарі</h4>
     <div class="comments-list mb-4">
         {% for comment in comments %}
-        <div class="comment">
+        <div class="comment mb-3 d-flex">
             {% if comment.author.profile.avatar %}
-                <img src="{{ comment.author.profile.avatar.url }}" alt="avatar">
+                <img src="{{ comment.author.profile.avatar.url }}" alt="avatar" class="me-2 rounded-circle" style="width:40px; height:40px; object-fit:cover;">
             {% else %}
-                <img src="/static/images/default-avatar.png" alt="avatar">
+                <img src="/static/images/default-avatar.png" alt="avatar" class="me-2 rounded-circle" style="width:40px; height:40px; object-fit:cover;">
             {% endif %}
             <div>
                 <strong class="text-info">{{ comment.author.username }}</strong>
                 <small class="text-muted ms-2">{{ comment.created_at|date:"d M Y H:i" }}</small>
-                <p class="mt-1 mb-0">{{ comment.content }}</p>
-            </div>
+                <p class="mt-1 mb-0" style="line-height:1.5;">{{ comment.content }}</p>
 
-            {% if user == comment.author or user == post.author or user.is_staff %}
-            <div class="comment-actions">
-                {% if user == comment.author %}
-                <a href="{% url 'edit_comment' comment.pk %}" class="btn btn-warning">✏️</a>
+                {% if user == comment.author or user == post.author or user.is_staff %}
+                <div class="comment-actions mt-1">
+                    {% if user == comment.author %}
+                    <a href="{% url 'edit_comment' comment.pk %}" class="btn btn-warning btn-sm">✏️</a>
+                    {% endif %}
+                    <a href="{% url 'delete_comment' comment.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Видалити коментар?');">🗑️</a>
+                </div>
                 {% endif %}
-                <a href="{% url 'delete_comment' comment.pk %}" class="btn btn-danger" onclick="return confirm('Видалити коментар?');">🗑️</a>
             </div>
-            {% endif %}
         </div>
         {% empty %}
         <p class="text-muted">Поки що немає коментарів 😢</p>
         {% endfor %}
     </div>
 
+    <!-- Форма для додавання коментаря -->
     {% if user.is_authenticated %}
-    <form method="post">
+    <form method="post" class="mb-4">
         {% csrf_token %}
         {{ form.content }}
         <button type="submit" class="btn btn-info mt-2">Додати коментар</button>
@@ -179,6 +80,9 @@ textarea.form-control {
     <p>Увійдіть, щоб залишити коментар.</p>
     {% endif %}
 
-    <a href="/" class="back-link mt-4 d-block">Назад</a>
+    <!-- Кнопка назад -->
+    <a href="/" class="back-link mt-4 d-block" style="text-decoration: none; color: #0dcaf0;">← Назад</a>
+
 </div>
+
 {% endblock %}
