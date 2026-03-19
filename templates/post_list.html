@@ -57,37 +57,35 @@
       <!-- POSTS GRID -->
       <div class="posts-grid">
         {% for post in posts %}
+        <div class="neon-card post-card mb-4">
             
-          <a href="/post/{{ post.id }}/" class="neon-card post-preview">
+            <!-- Зображення -->
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="post-thumb">
+            {% else %}
+                <img src="/static/images/default-post.png" class="post-thumb">
+            {% endif %}
 
-              {% if post.image %}
-                  <img src="{{ post.image.url }}" class="post-thumb">
-              {% else %}
-                  <img src="/static/images/default-post.png" class="post-thumb">
-              {% endif %}
-                {% for post in posts %}
-                <div class="neon-card post-card" style="position: relative; margin-bottom:20px;">
-                    <h3>{{ post.title }}</h3>
-                    <p>Категорія: {{ post.category.name }} — Середній рейтинг: {{ post.average_rating }}</p>
+            <!-- Назва та рейтинг -->
+            <h3><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h3>
+            <p>Категорія: {{ post.category.name }} — Середній рейтинг: {{ post.average_rating|default:"0" }}</p>
 
-                    <p>Оціни пост:</p>
-                    {% for i in rating_range %}
-                        <a href="{% url 'rate_post' post.id i %}" class="btn btn-sm btn-outline-primary">{{ i }}</a>
-                    {% endfor %}
-                {% endfor %}
-              <div class="p-3">
-                  <h3>{{ post.title }}</h3>
-                  <div class="post-meta">
-                      <span>👤 {{ post.author.username }}</span>
-                      <span>📂 {{ post.category }}</span>
-                  </div>
-                  <p class="text-muted">{{ post.content|truncatewords:18 }}</p>
-              </div>
+            <!-- Кнопки оцінки -->
+            <p>Оціни пост:</p>
+            {% for i in rating_range %}
+                <a href="{% url 'rate_post' post.id i %}" class="btn btn-sm btn-outline-primary">{{ i }}</a>
+            {% endfor %}
 
-          </a>
-        {% empty %}
-          <p class="text-muted text-center">Поки що немає постів 😢</p>
-        {% endfor %}
+            <!-- Короткий опис -->
+            <div class="post-meta mt-2">
+                <span>👤 {{ post.author.username }}</span>
+                <span>📂 {{ post.category.name }}</span>
+            </div>
+            <p class="text-muted">{{ post.content|truncatewords:18 }}</p>
+        </div>
+    {% empty %}
+        <p class="text-muted text-center">Поки що немає постів 😢</p>
+    {% endfor %}
       </div>
     </div>
   </div>
