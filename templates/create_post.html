@@ -1,81 +1,84 @@
 {% extends "base.html" %}
-
+{% block extra_css %}
+{{ form.media.css }}
+{% endblock %}
 {% block content %}
-{{ form.media }}
+
 
 
 <div class="row">
 
-<!-- ФОРМА -->
-<div class="col-lg-6">
-<div class="neon-card p-4">
+    <!-- ФОРМА -->
+    <div class="col-lg-6">
+        <div class="neon-card p-4">
 
-<h3 class="mb-4 text-info">✍️ Створити пост</h3>
+            <h3 class="mb-4 text-info">✍️ Створити пост</h3>
 
-<form method="post" enctype="multipart/form-data">
-{% csrf_token %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-<div class="mb-3">
-<label class="form-label">Назва</label>
-{{ form.title }}
-</div>
+                <div class="mb-3">
+                    <label class="form-label">Назва</label>
+                    {{ form.title }}
+                </div>
 
-<div class="mb-3">
-<label class="form-label">Текст</label>
-{{ form.content }}
-</div>
+                <div class="mb-3">
+                    <label class="form-label">Текст</label>
+                    {{ form.content }}
+                </div>
 
-<div class="mb-3">
-<label class="form-label">Категорія</label>
-{{ form.category }}
-</div>
+                <div class="mb-3">
+                    <label class="form-label">Категорія</label>
+                    {{ form.category }}
+                </div>
 
-<div class="mb-3">
-<label class="form-label">Теги</label>
-{{ form.tags }}
-</div>
+                <div class="mb-3">
+                    <label class="form-label">Теги</label>
+                    {{ form.tags }}
+                </div>
 
-<div class="mb-3">
-<label class="form-label">Зображення</label>
-<input type="file" name="images" id="id_images" multiple class="form-control">
-</div>
+                <div class="mb-3">
+                    <label class="form-label">Зображення</label>
+                    {{ form.image }}
+                    <!-- <input type="file" name="images" id="id_images" class="form-control"> -->
+                </div>
 
-<div class="mb-3">
-<label class="form-label">Статус</label>
-{{ form.status }}
-</div>
+                <div class="mb-3">
+                    <label class="form-label">Статус</label>
+                    {{ form.status }}
+                </div>
 
-<button type="submit" class="btn btn-primary w-100">
-💾 Зберегти
-</button>
+                <button type="submit" class="btn btn-primary w-100">
+                    💾 Зберегти
+                </button>
 
-</form>
-</div>
-</div>
+            </form>
+        </div>
+    </div>
 
-<!-- PREVIEW -->
-<div class="col-lg-6">
-<div class="neon-card p-4">
+    <!-- PREVIEW -->
+    <div class="col-lg-6">
+        <div class="neon-card p-4">
 
-<div id="preview-images" class="mb-3"></div>
+            <div id="preview-images" class="mb-3"></div>
 
-<h3 id="preview-title" class="text-info">Назва поста</h3>
+            <h3 id="preview-title" class="text-info">Назва поста</h3>
 
-<div class="mb-2">
-<span id="preview-category" class="badge bg-secondary"></span>
-<span id="preview-status" class="badge bg-info"></span>
-</div>
+            <div class="mb-2">
+                <span id="preview-category" class="badge bg-secondary"></span>
+                <span id="preview-status" class="badge bg-info"></span>
+            </div>
 
-<div id="preview-tags" class="mb-3"></div>
+            <div id="preview-tags" class="mb-3"></div>
 
-<hr>
+            <hr>
 
-<div id="preview-content" class="post-content">
-Тут буде текст поста...
-</div>
+            <div id="preview-content" class="post-content">
+                Тут буде текст поста...
+            </div>
 
-</div>
-</div>
+        </div>
+    </div>
 
 </div>
 </div>
@@ -84,120 +87,120 @@
 
 
 {% block extra_js %}
-{{ form.media }}
+{{ form.media.js }}
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function(){
+    document.addEventListener("DOMContentLoaded", function () {
 
-const titleInput = document.getElementById("id_title");
-const categoryInput = document.getElementById("id_category");
-const tagsInput = document.getElementById("id_tags");
-const imagesInput = document.getElementById("id_images");
-const statusInput = document.getElementById("id_status");
+        const titleInput = document.getElementById("id_title");
+        const categoryInput = document.getElementById("id_category");
+        const tagsInput = document.getElementById("id_tags");
+        const imagesInput = document.getElementById("id_images");
+        const statusInput = document.getElementById("id_status");
 
-const previewTitle = document.getElementById("preview-title");
-const previewContent = document.getElementById("preview-content");
-const previewCategory = document.getElementById("preview-category");
-const previewTags = document.getElementById("preview-tags");
-const previewImages = document.getElementById("preview-images");
-const previewStatus = document.getElementById("preview-status");
-
-
-// TITLE PREVIEW
-titleInput.addEventListener("input", () => {
-previewTitle.textContent = titleInput.value || "Назва поста";
-});
+        const previewTitle = document.getElementById("preview-title");
+        const previewContent = document.getElementById("preview-content");
+        const previewCategory = document.getElementById("preview-category");
+        const previewTags = document.getElementById("preview-tags");
+        const previewImages = document.getElementById("preview-images");
+        const previewStatus = document.getElementById("preview-status");
 
 
-// CATEGORY PREVIEW
-categoryInput.addEventListener("change", () => {
-
-previewCategory.textContent =
-categoryInput.options[categoryInput.selectedIndex].text;
-
-Array.from(tagsInput.options).forEach(option => {
-
-option.style.display =
-option.dataset.category == categoryInput.value
-? "block"
-: "none";
-
-option.selected = false;
-
-});
-
-previewTags.innerHTML = "";
-
-});
+        // TITLE PREVIEW
+        titleInput.addEventListener("input", () => {
+            previewTitle.textContent = titleInput.value || "Назва поста";
+        });
 
 
-// STATUS PREVIEW
-statusInput.addEventListener("change", () => {
+        // CATEGORY PREVIEW
+        categoryInput.addEventListener("change", () => {
 
-previewStatus.textContent =
-statusInput.options[statusInput.selectedIndex].text;
+            previewCategory.textContent =
+                categoryInput.options[categoryInput.selectedIndex].text;
 
-});
+            Array.from(tagsInput.options).forEach(option => {
 
+                option.style.display =
+                    option.dataset.category == categoryInput.value
+                        ? "block"
+                        : "none";
 
-// TAG PREVIEW
-tagsInput.addEventListener("change", () => {
+                option.selected = false;
 
-previewTags.innerHTML = "";
+            });
 
-Array.from(tagsInput.selectedOptions).forEach(option => {
+            previewTags.innerHTML = "";
 
-const span = document.createElement("span");
-
-span.className = "neon-badge me-1";
-
-span.textContent = option.text;
-
-previewTags.appendChild(span);
-
-});
-
-});
+        });
 
 
-// MULTIPLE IMAGE PREVIEW
-imagesInput.addEventListener("change", () => {
+        // STATUS PREVIEW
+        statusInput.addEventListener("change", () => {
 
-previewImages.innerHTML = "";
+            previewStatus.textContent =
+                statusInput.options[statusInput.selectedIndex].text;
 
-Array.from(imagesInput.files).forEach(file => {
-
-const img = document.createElement("img");
-
-img.src = URL.createObjectURL(file);
-
-img.className = "img-fluid rounded mb-2";
-
-img.style.maxHeight = "200px";
-img.style.marginRight = "10px";
-
-previewImages.appendChild(img);
-
-});
-
-});
+        });
 
 
-// CKEDITOR PREVIEW
-if (typeof CKEDITOR !== "undefined") {
+        // TAG PREVIEW
+        tagsInput.addEventListener("change", () => {
 
-CKEDITOR.instances.id_content.on("change", function(){
+            previewTags.innerHTML = "";
 
-const data = CKEDITOR.instances.id_content.getData();
+            Array.from(tagsInput.selectedOptions).forEach(option => {
 
-previewContent.innerHTML = data || "Тут буде текст поста...";
+                const span = document.createElement("span");
 
-});
+                span.className = "neon-badge me-1";
 
-}
+                span.textContent = option.text;
 
-});
+                previewTags.appendChild(span);
+
+            });
+
+        });
+
+
+        // // MULTIPLE IMAGE PREVIEW
+        // imagesInput.addEventListener("change", () => {
+
+        //     previewImages.innerHTML = "";
+
+        //     Array.from(imagesInput.files).forEach(file => {
+
+        //         const img = document.createElement("img");
+
+        //         img.src = URL.createObjectURL(file);
+
+        //         img.className = "img-fluid rounded mb-2";
+
+        //         img.style.maxHeight = "200px";
+        //         img.style.marginRight = "10px";
+
+        //         previewImages.appendChild(img);
+
+        //     });
+
+        // });
+
+
+        // CKEDITOR PREVIEW
+        if (typeof CKEDITOR !== "undefined") {
+
+            CKEDITOR.instances.id_content.on("change", function () {
+
+                const data = CKEDITOR.instances.id_content.getData();
+
+                previewContent.innerHTML = data || "Тут буде текст поста...";
+
+            });
+
+        }
+
+    });
 
 </script>
 
