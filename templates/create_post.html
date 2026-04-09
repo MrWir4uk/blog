@@ -14,7 +14,8 @@
 
             <h3 class="mb-4 text-info">✍️ Створити пост</h3>
 
-            <form method="post" enctype="multipart/form-data">
+            <form action="" method="post" enctype="multipart/form-data">
+                
                 {% csrf_token %}
 
                 <div class="mb-3">
@@ -164,27 +165,27 @@
         });
 
 
-        // // MULTIPLE IMAGE PREVIEW
-        // imagesInput.addEventListener("change", () => {
+        // MULTIPLE IMAGE PREVIEW
+        imagesInput.addEventListener("change", () => {
 
-        //     previewImages.innerHTML = "";
+            previewImages.innerHTML = "";
 
-        //     Array.from(imagesInput.files).forEach(file => {
+            Array.from(imagesInput.files).forEach(file => {
 
-        //         const img = document.createElement("img");
+                const img = document.createElement("img");
 
-        //         img.src = URL.createObjectURL(file);
+                img.src = URL.createObjectURL(file);
 
-        //         img.className = "img-fluid rounded mb-2";
+                img.className = "img-fluid rounded mb-2";
 
-        //         img.style.maxHeight = "200px";
-        //         img.style.marginRight = "10px";
+                img.style.maxHeight = "200px";
+                img.style.marginRight = "10px";
 
-        //         previewImages.appendChild(img);
+                previewImages.appendChild(img);
 
-        //     });
+            });
 
-        // });
+        });
 
 
         // CKEDITOR PREVIEW
@@ -197,9 +198,18 @@
                 previewContent.innerHTML = data || "Тут буде текст поста...";
 
             });
-
+        
         }
-
+    // СИНХРОНІЗАЦІЯ CKEDITOR ПЕРЕД ВІДПРАВКОЮ ФОРМИ
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            // Оновлюємо всі інстанси CKEditor перед submit
+            if (typeof CKEDITOR !== "undefined") {
+                for (let instance in CKEDITOR.instances) {
+                    CKEDITOR.instances[instance].updateElement();
+                }
+            }
+        });
     });
 
 </script>
