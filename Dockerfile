@@ -31,5 +31,7 @@ EXPOSE 8000
 # Замініть 'myproject' на назву вашої папки з settings.py
 # Приберіть python create_superuser.py && \ якщо не використовуєте Postrges
 CMD python manage.py migrate && \
-    python create_superuser.py && \ 
+    python create_superuser.py && \
+    python create_db.py && \ 
     gunicorn blog.wsgi:application --bind 0.0.0.0:8000
+
